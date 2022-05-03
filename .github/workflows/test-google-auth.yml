@@ -2,6 +2,9 @@ name: Build and Deploy to GKE
 
 on: [push]
 
+on:
+  workflow_call:
+
 env:
   PROJECT_ID: defendable-sandbox-oschistad
   GCP_WIP: "projects/569505694170/locations/global/workloadIdentityPools/github-actions-s2jp-pool/providers/github-actions-s2jp-provider"
