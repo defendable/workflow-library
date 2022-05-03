@@ -1,8 +1,7 @@
 name: Build and Deploy to GKE
 
-on: [push]
-
 on:
+  push:
   workflow_call:
 
 env:
