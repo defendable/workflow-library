@@ -4,7 +4,7 @@ on: [push]
 
 env:
   PROJECT_ID: defendable-sandbox-oschistad
-  GCP_WIP: projects/569505694170/locations/global/workloadIdentityPools/github-actions-s2jp-pool
+  GCP_WIP: "projects/569505694170/locations/global/workloadIdentityPools/github-actions-s2jp-pool/providers/github-actions-s2jp-provider"
   GCP_SA: github-actions@defendable-sandbox-oschistad.iam.gserviceaccount.com
   GCP_LOCATION: europe-west1 # TODO: update region of the Artifact Registry
   GKE_CLUSTER: standalone-example  # TODO: update to cluster name
