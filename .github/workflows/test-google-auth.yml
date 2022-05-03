@@ -1,0 +1,44 @@
+name: Build and Deploy to GKE
+
+on: [push]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_WIP: ${{ secrets.workload_identity_provider }}
+  GCP_SA: ${{ secrets.gcp_serviceaccount }}
+  GCP_LOCATION: europe-west1 # TODO: update region of the Artifact Registry
+  GKE_CLUSTER: standalone-example  # TODO: update to cluster name
+  GKE_ZONE: europe-west1-b   # TODO: update to cluster zone
+  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
+  REPOSITORY: docker-registry # TODO: update to Artifact Registry docker repository
+  IMAGE: testimage
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Print environment
+      run: |-
+        printenv|sort
+    # Configure Workload Identity Federation and generate an access token.
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.4.0'
+      with:
+        workload_identity_provider: ${{env.GCP_WIP}}
+        service_account: ${{env.GCP_SA}}
+        token_format: 'access_token'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+      
