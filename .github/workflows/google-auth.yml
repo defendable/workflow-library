@@ -53,7 +53,9 @@ jobs:
       run: 'gcloud info'
     - name: Create bucket for state
       run:  |
-        gcloud info
-        gsutil version -l
+        # gcloud info
+        # gsutil version -l
+        echo GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
+        cat ${GOOGLE_APPLICATION_CREDENTIALS=sa-key.json}
         gsutil mb gs://${PROJECT_ID}-tfstate
 
