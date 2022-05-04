@@ -41,8 +41,8 @@ jobs:
       with:
         workload_identity_provider: ${{ inputs.gcp_wi_provider }}
         service_account: ${{ inputs.gcp_serviceaccount }}
-        token_format: 'access_token'
-        access_token_lifetime: 300s
+        # token_format: 'access_token'
+        # access_token_lifetime: 300s
     - id: output
       name: output token
       run: echo "::set-output name=gcp-token::${{ steps.auth.outputs.access_token }}"
@@ -52,5 +52,8 @@ jobs:
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
     - name: Create bucket for state
-      run:  gsutil mb gs://${PROJECT_ID}-tfstate
+      run:  |
+        gcloud info
+        gsutil version -l
+        gsutil mb gs://${PROJECT_ID}-tfstate
 
