@@ -51,6 +51,6 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
     
     - name: Create bucket for state
-      shell: |
+      run: |
         gsutil mb gs://${PROJECT_ID}-tfstate
 
