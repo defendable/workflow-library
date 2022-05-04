@@ -56,6 +56,6 @@ jobs:
         # gcloud info
         # gsutil version -l
         echo GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
-        cat ${}
+        cat ${GOOGLE_APPLICATION_CREDENTIALS}
         gsutil mb gs://${PROJECT_ID}-tfstate
 
