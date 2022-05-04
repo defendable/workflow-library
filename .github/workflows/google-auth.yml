@@ -52,5 +52,6 @@ jobs:
     
     - name: Create bucket for state
       run: |
+        gcloud auth login
         gsutil mb gs://${PROJECT_ID}-tfstate
 
