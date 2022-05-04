@@ -36,8 +36,8 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v0.4.0'
       with:
-        workload_identity_provider: ${{ input.gcp_wi_provider }}
-        service_account: ${{ input.gcp_serviceaccount }}
+        workload_identity_provider: ${{ inputs.gcp_wi_provider }}
+        service_account: ${{ inputs.gcp_serviceaccount }}
         token_format: 'access_token'
 
     - name: 'Set up Cloud SDK'
