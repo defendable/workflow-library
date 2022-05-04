@@ -56,7 +56,8 @@ jobs:
       run:  |
         # gcloud info
         # gsutil version -l
-        echo GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
-        cat ${GOOGLE_APPLICATION_CREDENTIALS}
-        gsutil mb gs://${PROJECT_ID}-tfstate
+        # echo GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
+        # cat ${GOOGLE_APPLICATION_CREDENTIALS}
+        gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
+        GOOGLE_APPLICATION_CREDENTIALS=credentials.json gsutil mb gs://${PROJECT_ID}-tfstate
 
