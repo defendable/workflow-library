@@ -49,9 +49,8 @@ jobs:
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
-    
+    - name: 'Use gcloud CLI'
+      run: 'gcloud info'
     - name: Create bucket for state
-      run: |
-        gcloud auth login
-        gsutil mb gs://${PROJECT_ID}-tfstate
+      run:  gsutil mb gs://${PROJECT_ID}-tfstate
 
