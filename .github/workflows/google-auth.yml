@@ -41,8 +41,9 @@ jobs:
       with:
         workload_identity_provider: ${{ inputs.gcp_wi_provider }}
         service_account: ${{ inputs.gcp_serviceaccount }}
-        token_format: 'access_token'
-        access_token_lifetime: 300s
+        # token_format: 'access_token'
+        # access_token_lifetime: 300s
+        create_credentials_file: true
     - id: output
       name: output token
       run: echo "::set-output name=gcp-token::${{ steps.auth.outputs.access_token }}"
