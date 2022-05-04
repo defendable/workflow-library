@@ -18,6 +18,8 @@ jobs:
   checkout-auth-setup_sdk:
     name: Setup auth and Cloud SDK
     runs-on: ubuntu-latest
+    gcp-token: ${{ steps.step1.outputs.gcp-token }}
+
     environment: production
 
     permissions:
@@ -39,6 +41,9 @@ jobs:
         workload_identity_provider: ${{ inputs.gcp_wi_provider }}
         service_account: ${{ inputs.gcp_serviceaccount }}
         token_format: 'access_token'
+    - id: output
+      name: output token
+      run: echo "::set-output name=gcp-token::${GOOGLE_APPLICATION_CREDENTIALS}"
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
