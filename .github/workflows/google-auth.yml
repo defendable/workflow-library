@@ -74,7 +74,13 @@ jobs:
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=${GITHUB_REPOSITORY}/${ENVIRONMENT}"
     - id: plan
-      run: terraform plan -no-color
+      run: |
+        [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+        terraform plan -no-color
     - run: echo ${{ steps.plan.outputs.stdout }}
     - run: echo ${{ steps.plan.outputs.stderr }}
     - run: echo ${{ steps.plan.outputs.exitcode }}
+    # - id: apply
+    #   run: |
+    #     [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+    #     terraform apply -auto-approve
