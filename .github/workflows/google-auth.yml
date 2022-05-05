@@ -52,14 +52,14 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
-    - name: Create bucket for state
-      run:  |
+    # - name: Create bucket for state
+    #   run:  |
 
-        # gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
-        # export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
-        # gcloud auth activate-service-account --key-file=credentials.json
-        # gsutil mb gs://${PROJECT_ID}-tfstate
-        # gsutil versioning set on gs://${PROJECT_ID}-tfstate
+    #     gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
+    #     export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
+    #     gcloud auth activate-service-account --key-file=credentials.json
+    #     gsutil mb gs://${PROJECT_ID}-tfstate
+    #     gsutil versioning set on gs://${PROJECT_ID}-tfstate
     - name: Initialize Terraform
       uses: hashicorp/setup-terraform@v2
     - run: terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=env/dev"
