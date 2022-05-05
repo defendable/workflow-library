@@ -13,10 +13,12 @@ on:
         type: string
 env:
   PROJECT_ID: ${{ inputs.gcp_project_id }}
+  TF_WORKDIR: ${{ inputs.tf_workdir }}
+  ENVIRONMENT: ${{ inputs.environment }}
 
 jobs:
   checkout-auth-setup_sdk:
-    name: Setup auth and Cloud SDK
+    name: Setup auth and Cloud SDK, run Terraform
     runs-on: ubuntu-latest
     outputs:
       gcp-token: ${{ steps.step1.outputs.gcp-token }}
@@ -62,7 +64,9 @@ jobs:
     #     gsutil versioning set on gs://${PROJECT_ID}-tfstate
     - name: Initialize Terraform
       uses: hashicorp/setup-terraform@v2
-    - run: terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=env/dev"
+    - run: |
+    [ ${TF_WORKDIR} != "" ] && cd ${TF_WORKDIR}
+    terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=env/${ENVIRONMENT}"
     - id: plan
       run: terraform plan -no-color
     - run: echo ${{ steps.plan.outputs.stdout }}
