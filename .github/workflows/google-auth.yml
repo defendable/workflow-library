@@ -69,8 +69,9 @@ jobs:
     #     gsutil mb gs://${PROJECT_ID}-tfstate
     #     gsutil versioning set on gs://${PROJECT_ID}-tfstate
     - id: init
-      name: Initialize Terraform
       uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform init
       run: |
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=${GITHUB_REPOSITORY}/${ENVIRONMENT}"
