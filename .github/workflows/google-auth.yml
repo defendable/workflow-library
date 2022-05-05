@@ -11,6 +11,12 @@ on:
       gcp_serviceaccount:
         required: true
         type: string
+      tf_workdir:
+        required: false
+        type: string
+      environment:
+        required: true
+        type: string
 env:
   PROJECT_ID: ${{ inputs.gcp_project_id }}
   TF_WORKDIR: ${{ inputs.tf_workdir }}
