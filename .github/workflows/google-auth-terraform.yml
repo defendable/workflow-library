@@ -23,7 +23,7 @@ env:
   ENVIRONMENT: ${{ inputs.environment }}
 
 jobs:
-  checkout-auth-setup_sdk:
+  checkout-auth-terraform:
     name: Setup auth and Cloud SDK, run Terraform
     runs-on: ubuntu-latest
 
