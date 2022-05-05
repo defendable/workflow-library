@@ -26,8 +26,6 @@ jobs:
   checkout-auth-setup_sdk:
     name: Setup auth and Cloud SDK, run Terraform
     runs-on: ubuntu-latest
-    outputs:
-      gcp-token: ${{ steps.step1.outputs.gcp-token }}
 
     environment: production
 
@@ -49,8 +47,6 @@ jobs:
       with:
         workload_identity_provider: ${{ inputs.gcp_wi_provider }}
         service_account: ${{ inputs.gcp_serviceaccount }}
-        # token_format: 'access_token'
-        # access_token_lifetime: 300s
         create_credentials_file: true
     - id: output
       name: output token
@@ -60,14 +56,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
-    # - name: Create bucket for state
-    #   run:  |
 
-    #     gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
-    #     export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
-    #     gcloud auth activate-service-account --key-file=credentials.json
-    #     gsutil mb gs://${PROJECT_ID}-tfstate
-    #     gsutil versioning set on gs://${PROJECT_ID}-tfstate
     - id: init
       uses: hashicorp/setup-terraform@v2
 
