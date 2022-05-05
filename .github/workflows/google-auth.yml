@@ -59,7 +59,7 @@ jobs:
         gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
         export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
         gcloud auth activate-service-account --key-file=credentials.json
-        gsutil mb gs://${PROJECT_ID}-tfstate
+        # gsutil mb gs://${PROJECT_ID}-tfstate
         gsutil versioning set on gs://${PROJECT_ID}-tfstate
     - name: Initialize Terraform
       uses: hashicorp/setup-terraform@v2
