@@ -54,13 +54,18 @@ jobs:
       run: 'gcloud info'
     - name: Create bucket for state
       run:  |
-        # gcloud info
-        # gsutil version -l
-        # echo GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
-        # cat ${GOOGLE_APPLICATION_CREDENTIALS}
+        # GCP, bless them, have not deigned to implement modern OAUTH2 support in the gsutil tool.
+        # Instead we have to create a legacy credential file under the identity of the service account we already have.
         gcloud iam service-accounts keys create credentials.json --iam-account=${{ inputs.gcp_serviceaccount }}
         export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
-        cat ${GOOGLE_APPLICATION_CREDENTIALS}
         gcloud auth activate-service-account --key-file=credentials.json
         gsutil mb gs://${PROJECT_ID}-tfstate
-
+        gsutil versioning set on gs://${PROJECT_ID}-tfstate
+    - name: Initialize Terraform
+      uses: hashicorp/setup-terraform@v2
+    - run: terraform init
+    - id: plan
+      run: terraform plan -no-color
+    - run: echo ${{ steps.plan.outputs.stdout }}
+    - run: echo ${{ steps.plan.outputs.stderr }}
+    - run: echo ${{ steps.plan.outputs.exitcode }}
