@@ -68,19 +68,22 @@ jobs:
     #     gcloud auth activate-service-account --key-file=credentials.json
     #     gsutil mb gs://${PROJECT_ID}-tfstate
     #     gsutil versioning set on gs://${PROJECT_ID}-tfstate
-    - name: Initialize Terraform
+    - id: init
+      name: Initialize Terraform
       uses: hashicorp/setup-terraform@v2
-    - run: |
+      run: |
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=${GITHUB_REPOSITORY}/${ENVIRONMENT}"
     - id: plan
+      name: Terraform plan
       run: |
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform plan -no-color
     - run: echo ${{ steps.plan.outputs.stdout }}
     - run: echo ${{ steps.plan.outputs.stderr }}
     - run: echo ${{ steps.plan.outputs.exitcode }}
-    # - id: apply
-    #   run: |
-    #     [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
-    #     terraform apply -auto-approve
+    - id: apply
+      name: Terraform apply
+      run: |
+        [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+        terraform apply -auto-approve
