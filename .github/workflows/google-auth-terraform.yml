@@ -2,15 +2,6 @@ on:
   push:
   workflow_call:
     inputs:
-      gcp_project_id:
-        required: true
-        type: string
-      gcp_wi_provider:
-        required: true
-        type: string
-      gcp_serviceaccount:
-        required: true
-        type: string
       tf_workdir:
         required: false
         type: string
@@ -18,17 +9,17 @@ on:
         required: true
         type: string
 env:
-  PROJECT_ID: ${{ inputs.gcp_project_id }}
+  PROJECT_ID: ${{ secrets.gcp_project_id }}
   TF_WORKDIR: ${{ inputs.tf_workdir }}
   ENVIRONMENT: ${{ inputs.environment }}
+  TF_VAR_gh_token: ${{ secrets.ACTIONS_PAT }}
 
 jobs:
   checkout-auth-terraform:
     name: Setup auth and Cloud SDK, run Terraform
     runs-on: ubuntu-latest
 
-    environment: production
-
+    environment: ${{ inputs.environment }}
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -45,23 +36,32 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v0.4.0'
       with:
-        workload_identity_provider: ${{ inputs.gcp_wi_provider }}
-        service_account: ${{ inputs.gcp_serviceaccount }}
+        workload_identity_provider: ${{ secrets.gcp_wi_provider }}
+        service_account: ${{ secrets.gcp_serviceaccount }}
         create_credentials_file: true
     - id: output
       name: output token
       run: echo "::set-output name=gcp-token::${{ steps.auth.outputs.access_token }}"
-
+    - name: "show gcp token"
+      run: |
+        echo GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+        cat ${GOOGLE_APPLICATION_CREDENTIALS}
+        
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
-
+    # - id: git_token
+    #   uses: de-vri-es/setup-git-credentials@v2
+    #   with:
+    #     credentials: ${{ secrets.GITHUB_TOKEN }}
     - id: init
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform init
       run: |
+        git config --global url."https://oauth2:${{ secrets.ACTIONS_PAT }}@github.com".insteadOf https://github.com
+        # cat ~/.gitconfig
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=${GITHUB_REPOSITORY}/${ENVIRONMENT}"
     - id: plan
@@ -73,5 +73,15 @@ jobs:
     - id: apply
       name: Terraform apply
       run: |
+        export GITHUB_TOKEN=${{ secrets.ACTIONS_PAT }}
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform apply -auto-approve
+    - id: lock
+      name: Commit lock file
+      run: |
+        [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .terraform.lock.hcl
+        git commit -m "Persisting lock file"
+        git push
