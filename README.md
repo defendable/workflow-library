@@ -1,7 +1,7 @@
 # Shared workflow library for GCP integration
 Reference repo for OIDC authentication
 
-# USAGE
+# Usage
 
 These workflows are meant to be called as a job in a GitHub Actions workflow. Example:
 
@@ -18,6 +18,10 @@ jobs:
       environment: develop
     secrets: inherit
 ```
+
+## Parameters
+Currently, two input variables need to be passed from the calling workflow: the environment name and the terraform workdir.
+Additionally, you need to pass any repo-, environment- or organization secrets by declaring `secrets: inherit`
 
 ## Required secrets
 
