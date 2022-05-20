@@ -51,19 +51,25 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
-    # - id: git_token
-    #   uses: de-vri-es/setup-git-credentials@v2
-    #   with:
-    #     credentials: ${{ secrets.GITHUB_TOKEN }}
     - id: init
       uses: hashicorp/setup-terraform@v2
-
+    - name: Terraform fmt
+      id: fmt
+      run: |
+        [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+        terraform fmt -check
+      continue-on-error: true
     - name: Terraform init
       run: |
         git config --global url."https://oauth2:${{ secrets.ACTIONS_PAT }}@github.com".insteadOf https://github.com
         # cat ~/.gitconfig
         [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
         terraform init -backend-config="bucket=${PROJECT_ID}-tfstate" -backend-config="prefix=${GITHUB_REPOSITORY}/${ENVIRONMENT}"
+    - name: Terraform Validate
+      id: validate
+      run: |
+        [ "${TF_WORKDIR}" != "" ] && cd ${TF_WORKDIR}
+        terraform validate -no-color
     - id: plan
       name: Terraform plan
       run: |
