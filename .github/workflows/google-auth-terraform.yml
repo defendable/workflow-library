@@ -13,6 +13,7 @@ env:
   TF_WORKDIR: ${{ inputs.tf_workdir }}
   ENVIRONMENT: ${{ inputs.environment }}
   TF_VAR_gh_token: ${{ secrets.ACTIONS_PAT }}
+  GOOGLE_ENCRYPTION_KEY: ${{ secrets.GOOGLE_ENCRYPTION_KEY }}
 
 jobs:
   checkout-auth-terraform:
