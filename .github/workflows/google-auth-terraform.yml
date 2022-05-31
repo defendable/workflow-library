@@ -43,10 +43,10 @@ jobs:
     - id: output
       name: output token
       run: echo "::set-output name=gcp-token::${{ steps.auth.outputs.access_token }}"
-    - name: "show gcp token"
-      run: |
-        echo GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
-        cat ${GOOGLE_APPLICATION_CREDENTIALS}
+#     - name: "show gcp token"
+#       run: |
+#         echo GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+#         cat ${GOOGLE_APPLICATION_CREDENTIALS}
         
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
